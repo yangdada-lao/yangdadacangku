@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>去水印工具</title>
+    <meta name="description" content="一个简洁高效的去水印工具，支持多种视频平台。">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <style>
+        /* 全局样式 */
+        :root {
+            --primary-color: rgba(76, 175, 80, 0.8); /* 半透明绿色 */
+            --secondary-color: rgba(69, 160, 73, 0.8); /* 半透明深绿色 */
+            --background-color: #f5f5f5;
+            --text-color: rgba(51, 51, 51, 0.9); /* 半透明深灰色 */
+            --error-color: rgba(217, 83, 79, 0.9); /* 半透明红色 */
+            --font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --container-background: rgba(255, 255, 255, 0.8); /* 半透明白色背景 */
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            background-image: url('https://q5.itc.cn/q_70/images03/20240605/0f9617ab29314996bcd999a48edb2ab9.png'); /* 自定义背景图片 */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* 背景图固定，不随内容滚动 */
+            transition: background-image 0.5s ease; /* 背景图片过渡效果 */
+            overflow: auto; /* 允许全局滚动 */
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: var(--container-background);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative; /* 为自定义背景按钮定位做准备 */
+            overflow: hidden; /* 防止内部内容溢出 */
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: var(--text-color);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* 文字阴影 */
+        }
+
+        h2 {
+            font-size: 1em;
+            color: var(--text-color);
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            padding: 12px;
+            width: 90%;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            background-color: rgba(255, 255, 255, 0.9); /* 半透明白色背景 */
+            color: var(--text-color);
+        }
+
+        .input-group .button-group {
+            display: flex;
+            justify-content: center;
+            width: 90%;
+        }
+
+        .input-group button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin: 0 5px;
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .input-group button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .media-frame {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.9); /* 半透明白色背景 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        #videoPlayer {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            background-color: black;
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            text-align: center;
+            font-size: 1em;
+            color: var(--error-color);
+            margin-top: 20px;
+        }
+
+        .custom-background-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 6px;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .custom-background-button:hover {
+            background-color: rgba(255, 255, 255, 1);
+        }
+
+        footer {
+            background-color: rgba(244, 244, 249, 0.8);
+            padding: 10px;
+            text-align: center;
+            width: 100%;
+            font-size: 12px;
+            margin-top: auto;
+        }
+
+        footer p {
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5em;
+            }
+
+            h2 {
+                font-size: 0.9em;
+            }
+
+            .input-group input {
+                width: 100%;
+            }
+
+            .input-group .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .input-group button {
+                width: 100%;
+                margin: 5px 0;
+            }
+
+            .loader {
+                width: 30px;
+                height: 30px;
+            }
+
+            .container {
+                margin: 20px;
+                padding: 15px;
+            }
+
+            .custom-background-button {
+                top: 10px;
+                right: 10px;
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="custom-background-button" onclick="uploadBackground()">背景</button>
+        <header>
+            <h1>花有重开日 人无再少年</h1>
+            <h2>⁄(⁄ ⁄•⁄ω⁄•⁄ ⁄)⁄</h2>
+        </header>
+        <div class="input-group">
+            <input type="text" id="mediaUrl" placeholder="请输入媒体链接" />
+            <div class="button-group">
+                <button class="button parse-button" onclick="parseMedia()">解析</button>
+                <button class="button prompt-button" onclick="showPrompt()">适配</button>
+            </div>
+        </div>
+        <div id="loadingContainer" style="display: none; text-align: center;">
+            <div class="loader"></div>
+            <p id="loading-text">努力中...</p>
+        </div>
+        <div class="media-frame" id="videoViewer">
+            <video id="videoPlayer" controls autoplay playsinline>您的浏览器不支持视频播放。</video>
+        </div>
+        <div class="message" id="messageContainer"></div>
+    </div>
+    <footer>
+        <p id="footerText">© 2025 制作人: WUXAN</p>
+    </footer>
+    <script>
+        // JavaScript 代码保持不变
+        let clickCount = 0;
+        const maxClickCount = 10;
+        const footer = document.getElementById("footerText");
+        const footerText = footer.textContent;
+
+        footer.addEventListener("click", function() {
+            clickCount++;
+            if (clickCount === maxClickCount) {
+                showValidation();
+            }
+        });
+
+        function showValidation() {
+            const userInput = prompt("请输入作者的名字:");
+            if (userInput === "WUXAN") {
+                alert("谢谢啦");
+                window.location.href = "https://www.example.com"; // 退出网站到指定链接
+            } else {
+                alert("答错啦");
+                window.location.href = "https://www.example.com"; // 退出网站到指定链接
+            }
+        }
+
+        function showPrompt() {
+            alert("链接支持抖音、快手、火山视频、西瓜视频、皮皮虾、秒拍、头条视频、腾讯微视、美图秀秀、美拍、微博、小红书、网易云（目前只支持视频类解析）。");
+        }
+
+        function uploadBackground() {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "image/*";
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.body.style.backgroundImage = `url('${e.target.result}')`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        function parseMedia() {
+            const url = document.getElementById("mediaUrl").value.trim();
+            const loadingContainer = document.getElementById("loadingContainer");
+            const messageContainer = document.getElementById("messageContainer");
+            const videoViewer = document.getElementById("videoViewer");
+            if (!url) {
+                alert("请输入链接");
+                return;
+            }
+            // 显示加载动画
+            loadingContainer.style.display = "block";
+            messageContainer.textContent = "";
+            videoViewer.style.display = "none";
+            document.getElementById("videoPlayer").src = "";
+            // 构建 API 请求链接
+            const apiUrl = `https://api.kxzjoker.cn/API/jiexi_video_2.php?url=${encodeURIComponent(url)}`;
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("无法连接到解析服务");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    loadingContainer.style.display = "none"; // 隐藏加载动画
+                    if (data.success && data.data.video_url) {
+                        const videoPlayer = document.getElementById("videoPlayer");
+                        videoPlayer.src = data.data.video_url;
+                        videoViewer.style.display = "block";
+                    } else {
+                        messageContainer.textContent = data.message || "解析失败，请检查链接或稍后重试。";
+                        messageContainer.classList.add("message");
+                    }
+                })
+                .catch(error => {
+                    loadingContainer.style.display = "none";
+                    messageContainer.textContent = error.message || "请求失败，请稍后重试。";
+                    messageContainer.classList.add("message");
+                });
+        }
+    </script>
+</body>
+</html>
