@@ -1,0 +1,58 @@
+// 创作者: 曦曦(DreamFekk) https://github.com/DreamFekk
+// 禁止圈钱盗卖
+
+e_machine: 0xB7
+Library: /data/app/~~Wz7s1StOy5C99GUe_qi3BQ==/com.george.lyra-GUyQt2QoIK85WHyJVk60sQ==/lib/arm64/libUnreal.so
+BaseAddress: 0x7453807000
+7453807000-7457307000 r--p 0 fe:37 893897 /data/app/~~Wz7s1StOy5C99GUe_qi3BQ==/com.george.lyra-GUyQt2QoIK85WHyJVk60sQ==/lib/arm64/libUnreal.so
+7457307000-745730b000 ---p 0 00:00 0 
+745730b000-745dc88000 r-xp 3b00000 fe:37 893897 /data/app/~~Wz7s1StOy5C99GUe_qi3BQ==/com.george.lyra-GUyQt2QoIK85WHyJVk60sQ==/lib/arm64/libUnreal.so
+745dc88000-745dc8b000 ---p 0 00:00 0 
+745dc8b000-745eddb000 r--p a47c000 fe:37 893897 /data/app/~~Wz7s1StOy5C99GUe_qi3BQ==/com.george.lyra-GUyQt2QoIK85WHyJVk60sQ==/lib/arm64/libUnreal.so
+745eddb000-745edde000 ---p 0 00:00 0 
+745edde000-745ee0e000 rw-p b5cb000 fe:37 893897 /data/app/~~Wz7s1StOy5C99GUe_qi3BQ==/com.george.lyra-GUyQt2QoIK85WHyJVk60sQ==/lib/arm64/libUnreal.so
+745ee0e000-745f16f000 rw-p 0 00:00 0 [anon:.bss]
+==========================
+FNamePool: [<Base> + 0xB6606C0] = 0x745EE676C0
+Test dumping first 5 name entries
+GetNameByID(0): None
+GetNameByID(1): neByteProperty�IntProperty
+GetNameByID(2): ByteProperty�IntProperty
+GetNameByID(3): ByteProperty
+GetNameByID(4): teProperty�IntProperty
+==========================
+GUObjectArray: [<Base> + 0xB6B9ED8] = 0x745EEC0ED8
+ObjObjects: [<Base> + 0xB6B9EE8] = 0x745EEC0EE8
+ObjObjects Num: 196608
+Test Dumping First 5 Name Entries
+GetObjectPtr(0): CoreUObject
+GetObjectPtr(1): Object
+GetObjectPtr(2): Engine
+GetObjectPtr(3): MaterialExpression
+GetObjectPtr(4): MaterialExpressionCustomOutput
+==========================
+Finding GEngine & GWorld...
+Class Engine.Engine -> 0x6133899580
+Class Engine.World -> 0x61338A2660
+GEngine: [<Base> + 0xB84F190] = 0x745F056190
+GWorld: [<Base> + 0xB7E6538] = 0x745EFED538
+==========================
+Couldn't find refrence to Matrix.
+Couldn't find refrence to Physx.
+Couldn't find refrence to FrameCount.
+Couldn't find refrence to StaticFindObject.
+NativeAndroidApp: [<Base> + 0xB857658] = 0x745F05E658
+Couldn't find refrence to ProcessEvent.
+Couldn't find ProcessEventIdx.
+==========================
+Gathering UObjects...
+Gathered 196608 Objects (Packages 623)
+==========================
+Saved packages: 623
+Saved classes: 5595
+Saved structs: 5843
+Saved enums: 2154
+==========================
+正在生成 script.json...
+函数数量: 12507
+==========================
